@@ -33,24 +33,23 @@ Perfect for freelancers or DevOps engineers showcasing AWS skills. Built with Te
    ```
 
 2. Initialize Terraform:
-```bash
-terraform init
-```
+    ```bash
+    terraform init
+    ```
 
 3. Review the plan (dry run):
-```bash
-terraform plan
-```
-This shows what resources will be created.
+    ```bash
+    terraform plan
+    ```
+    This shows what resources will be created.
 
 4. Apply the configuration:
-```bash
-terraform apply
-```
-Type yes to confirm. Deployment takes ~5-10 minutes.
+    ```bash
+    terraform apply
+    ```
+    Type yes to confirm. Deployment takes ~5-10 minutes.
 
 5. Access the deployed resources:
     - Web Server: Open http://<EC2_PUBLIC_IP> in your browser (output shown after apply).
     - S3 Bucket: Use the bucket name from outputs to upload files via AWS Console or CLI.
 
-    
