@@ -1,8 +1,7 @@
 # AWS Migration Terraform Project
 
 A simple Infrastructure as Code (IaC) example demonstrating a basic migration from on-premises to AWS. This project deploys a VPC, an EC2 instance running a web server (Nginx/Apache), and an S3 bucket for storage – simulating a quick cloud migration setup.
-
-Perfect for freelancers or DevOps engineers showcasing AWS skills. Built with Terraform for repeatable, version-controlled deployments.
+Built with Terraform for repeatable, version-controlled deployments.
 
 [![Terraform](https://img.shields.io/badge/terraform-%23736ADC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
