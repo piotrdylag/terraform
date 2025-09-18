@@ -24,6 +24,11 @@ Built with Terraform for repeatable, version-controlled deployments.
 - AWS Free Tier account
 - Git for version control
 
+## Architecture Diagram
+Here's the infrastructure created by this Terraform configuration:
+
+![AWS Migration Architecture](https://i.imgur.com/NEzhcUk.png)
+
 ## Quick Start
 1. Clone the repo:
    ```bash
