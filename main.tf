@@ -46,7 +46,7 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.gw.id
   }
   tags = {
-    Name = "public-rt"
+    Name = "main-rtb"
   }
 }
 
@@ -55,7 +55,7 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# Security Group (pozwala HTTP/SSH)
+# Security Group (allow HTTP/SSH)
 resource "aws_security_group" "web" {
   vpc_id = aws_vpc.main.id
   ingress {
@@ -68,7 +68,7 @@ resource "aws_security_group" "web" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # W realu ogranicz do twojego IP
+    cidr_blocks = ["0.0.0.0/0"]  # In development and production limit to your public IP
   }
   egress {
     from_port   = 0
@@ -81,18 +81,18 @@ resource "aws_security_group" "web" {
   }
 }
 
-# EC2 Instance (z user data dla Nginx)
+# EC2 Instance (with pre installed nginx)
 resource "aws_instance" "webserver" {
-  ami           = "ami-0ed1e06189d76073f"  # Amazon Linux 2 w eu-west-1; sprawdź dla twojego regionu
+  ami           = "ami-0ed1e06189d76073f"  # Ubuntu 24.04 for eu-central-1
   instance_type = "t4g.small"
   subnet_id     = aws_subnet.public.id
   security_groups = [aws_security_group.web.name]
   user_data = <<-EOF
               #!/bin/bash
               apt update -y
-              apt install -y apache2
-              systemctl start apache2
-              systemctl enable apache2
+              apt install -y nginx
+              systemctl start nginx
+              systemctl enable nginx
               echo "<h1>Webserver created successfully!</h1>" > /var/www/html/index.html
               EOF
   tags = {
@@ -102,7 +102,7 @@ resource "aws_instance" "webserver" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "data" {
-  bucket = "my-main-bucket-${random_string.suffix.result}"  # Unikalna nazwa
+  bucket = "my-main-bucket-${random_string.suffix.result}"  # Unique name
   tags = {
     Name = "migration-storage"
   }
