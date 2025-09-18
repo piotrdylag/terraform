@@ -14,16 +14,16 @@ provider "aws" {
 
 # VPC
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.11.1.0/24"
   tags = {
-    Name = "migration-vpc"
+    Name = "main-vpc"
   }
 }
 
 # Public Subnet
 resource "aws_subnet" "public" {
   vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+  cidr_block = "10.11.1.0/26"
   availability_zone = "${var.aws_region}a"
   tags = {
     Name = "public-subnet"
@@ -34,7 +34,7 @@ resource "aws_subnet" "public" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "migration-igw"
+    Name = "main-igw"
   }
 }
 
@@ -82,18 +82,18 @@ resource "aws_security_group" "web" {
 }
 
 # EC2 Instance (z user data dla Nginx)
-resource "aws_instance" "web" {
-  ami           = "ami-0c02fb55956c7d316"  # Amazon Linux 2 w eu-west-1; sprawdź dla twojego regionu
-  instance_type = "t2.micro"
+resource "aws_instance" "webserver" {
+  ami           = "ami-0ed1e06189d76073f"  # Amazon Linux 2 w eu-west-1; sprawdź dla twojego regionu
+  instance_type = "t4g.small"
   subnet_id     = aws_subnet.public.id
   security_groups = [aws_security_group.web.name]
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y httpd
-              systemctl start httpd
-              systemctl enable httpd
-              echo "<h1>Migracja do AWS udana!</h1>" > /var/www/html/index.html
+              apt update -y
+              apt install -y apache2
+              systemctl start apache2
+              systemctl enable apache2
+              echo "<h1>Webserver created successfully!</h1>" > /var/www/html/index.html
               EOF
   tags = {
     Name = "migrated-web-server"
@@ -102,7 +102,7 @@ resource "aws_instance" "web" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "data" {
-  bucket = "moj-migracja-bucket-${random_string.suffix.result}"  # Unikalna nazwa
+  bucket = "my-main-bucket-${random_string.suffix.result}"  # Unikalna nazwa
   tags = {
     Name = "migration-storage"
   }
